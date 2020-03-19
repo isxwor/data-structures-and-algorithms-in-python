@@ -22,8 +22,6 @@ import math
 
 class Polygon(metaclass=ABCMeta):
     ''' supports regular polygons only '''
-    def __init__(self, *sides):
-        self._sides = list(sides)
     
     @abstractmethod
     def area(self):
@@ -44,7 +42,7 @@ class Triangle(Polygon):
             raise TypeError(
                 f'Triangle takes 3 positional arguments but {len(sides)} were given'
             )
-        super().__init__(*sides)
+        self._sides = sides
     
     def area(self):
         ''' Calculating area of a triangle using Heron's formula '''
@@ -55,28 +53,18 @@ class Triangle(Polygon):
         return round(math.sqrt(result), 2)
     
     def perimeter(self):
-        return round(sum(self._sides), 2)
+        return sum(self._sides)
 
 
 class IsoscelesTriangle(Triangle):
-    def __init__(self, *sides):
-        if len(sides) == 2:
-            sides = sides[:1]*2 + sides[-1:]  # sides, sides, base
-        elif len(sides) < 2:
-            raise TypeError(
-                f'missing {2-len(sides)} positional arguments'
-            )
+    def __init__(self, side, base):
+        sides = [side]*2 + [base] # side, side, base
         super().__init__(*sides)
 
 
 class EquilateralTriangle(Triangle):
-    def __init__(self, *sides):
-        if len(sides) == 1:
-            sides = sides[:] * 3
-        elif len(sides) < 1:
-            raise TypeError(
-                'missing 1 positional argument'
-            )
+    def __init__(self, side):
+        sides = [side] * 3
         super().__init__(*sides)
 
 
@@ -93,20 +81,15 @@ class Quadrilateral(Polygon):
             raise TypeError(
                 f'Quadrilateral takes 4 positional arguments but {len(sides)} were given'
             )
-        super().__init__(*sides)
+        self._sides = sides
     
     def perimeter(self):
-        return round(sum(self._sides), 2)
+        return sum(self._sides)
 
 
 class Rectangle(Quadrilateral):
-    def __init__(self, *sides):
-        if len(sides) == 2:
-            sides = sides[:1]*2 + sides[1:]*2  # length, length, breadth, breadth
-        elif len(sides) < 2:
-            raise TypeError(
-                'expected atleast 2 positional arguments'
-            )
+    def __init__(self, length, breadth):
+        sides = [length]*2 + [breadth]*2  # length, length, breadth, breadth
         super().__init__(*sides)
     
     def area(self):
@@ -115,13 +98,8 @@ class Rectangle(Quadrilateral):
 
 
 class Square(Quadrilateral):
-    def __init__(self, *sides):
-        if len(sides) == 1:
-            sides = sides[:] * 4
-        elif len(sides) < 1:
-            raise TypeError(
-                'expected atleast 1 positional argument'
-            )
+    def __init__(self, side):
+        sides = [side] * 4
         super().__init__(*sides)
     
     def area(self):
@@ -130,62 +108,40 @@ class Square(Quadrilateral):
 
 
 class Pentagon(Polygon):
-    def __init__(self, *sides):
-        if len(sides) == 1:
-            sides = sides[:] * 5
-        elif len(sides) < 1:
-            raise TypeError(
-                'missing 1 positional argument'
-            )
-        else:
-            raise TypeError(
-                f'Pentagon takes 1 positional argument but {len(sides)} were given'
-            )
-        super().__init__(*sides)
+    def __init__(self, side):
+        self._side = side
     
     def area(self):
         rad = 54 * (math.pi/180)  # math.tan() takes argument in radians
-        result = (5 * pow(self._sides[0], 2) * math.tan(rad)) / 4
+        result = (5 * pow(self._side, 2) * math.tan(rad)) / 4
         return round(result, 2)
     
     def perimeter(self):
-        return round(sum(self._sides), 2)
+        return (5 * self._side)
 
 
 class Hexagon(Polygon):
-    def __init__(self, *sides):
-        if len(sides) == 1:
-            sides = sides[:] * 6
-        elif len(sides) < 1:
-            raise TypeError(
-                'missing 1 positional argument'
-            )
-        super().__init__(*sides)
+    def __init__(self, side):
+        self._side = side
     
     def area(self):
-        result = ((3 * math.sqrt(3)) / 2) * pow(self._sides[0], 2)
+        result = ((3 * math.sqrt(3)) / 2) * pow(self._side, 2)
         return round(result, 2)
     
     def perimeter(self):
-        return round(sum(self._sides), 2)
+        return (6 * self._side)
 
 
 class Octagon(Polygon):
-    def __init__(self, *sides):
-        if len(sides) == 1:
-            sides = sides[:] * 8
-        elif len(sides) < 1:
-            raise TypeError(
-                'missing 1 positional argument'
-            )
-        super().__init__(*sides)
+    def __init__(self, side):
+        self._side = side
     
     def area(self):
-        result = 2 * (1 + math.sqrt(2)) * pow(self._sides[0], 2)
+        result = 2 * (1 + math.sqrt(2)) * pow(self._side, 2)
         return round(result, 2)
     
     def perimeter(self):
-        return round(sum(self._sides), 2)
+        return (8 * self._side)
 
 
 if __name__ == '__main__':
