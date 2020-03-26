@@ -16,7 +16,7 @@ class Alice:
         self._prob = probability
     
     def create(self):
-        ''' creates packet based on thr predefined probability '''
+        ''' creates packet based on the predefined probability '''
         if self._prob > random.random():
             packet = f'PKG_{round(random.random()*1000)}'
             print(f'-> Alice created a packet \'{packet}\'')
