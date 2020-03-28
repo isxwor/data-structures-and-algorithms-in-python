@@ -1,28 +1,29 @@
-''' P-2.36
-Write a Python program to simulate an ecosystem containing two types
-of creatures, bears and ﬁsh. The ecosystem consists of a river, which is
-modeled as a relatively large list. Each element of the list should be a
-Bear object, a Fish object, or None. In each time step, based on a random
-process, each animal either attempts to move into an adjacent list location
-or stay where it is. If two animals of the same type are about to collide in
-the same cell, then they stay where they are, but they create a new instance
-of that type of animal, which is placed in a random empty (i.e., previously
-None) location in the list. If a bear and a ﬁsh collide, however, then the
-ﬁsh dies (i.e., it disappears).
+''' P-2.37
+Write a simulator, as in the previous project, but add a Boolean gender
+ﬁeld and a ﬂoating-point strength ﬁeld to each animal, using an Animal
+class as a base class. If two animals of the same type try to collide, then
+they only create a new instance of that type of animal if they are of different
+genders. Otherwise, if two animals of the same type and gender try to
+collide, then only the one of larger strength survives.
 '''
-
 
 import random
 
 
-class Bear:
-    def __str__(self):
-        return 'B'
+class Animal:
+    def __init__(self):
+        self._gender = random.choice('MF')
+        self._strength = random.random()
 
 
-class Fish:
+class Bear(Animal):
     def __str__(self):
-        return 'F'
+        return f'B{self._gender}'
+
+
+class Fish(Animal):
+    def __str__(self):
+        return f'F{self._gender}'
 
 
 class River:
@@ -32,7 +33,7 @@ class River:
         for _ in range(length):
             rc = random.choice([Bear(), Fish(), None])
             self._river.append(rc)
-        self._processed = set()  # using set to avoid duplicate values
+        self._processed = set()
     
     def __len__(self):
         return self._length
@@ -70,16 +71,23 @@ class River:
             try:
                 nxt = self[i]
             except IndexError:
-                nxt = self[0]  # circular river system
+                nxt = self[0]
                 i = 0
             if nxt is None:
                 self[i] = current_creature
                 self[index] = None
             else:
                 if type(current_creature) == type(nxt):
-                    self._add_random(current_creature)
+                    if current_creature._gender != nxt._gender:
+                        self._add_random(current_creature)
+                    else:
+                        if current_creature._strength > nxt._strength:
+                            self[i] = current_creature
+                        else:
+                            i = index
+                        self[index] = None
                 else:
-                    self[i] = Bear()  # Bear eats Fish
+                    self[i] = Bear()
                     if isinstance(current_creature, Fish):
                         i = index
                     self[index] = None
@@ -90,7 +98,7 @@ class River:
         for index in range(len(self)):
             if index not in self._processed:
                 self._update_cell(index)
-        self._processed.clear()  # resets after each cycle
+        self._processed.clear()
     
     def __str__(self):
         state = ''
