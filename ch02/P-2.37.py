@@ -60,7 +60,7 @@ class River:
         ec = self._empty_cells()
         if ec:
             random_cell = random.choice(ec)
-            self[random_cell] = creature
+            self[random_cell] = Bear() if isinstance(creature, Bear) else Fish()
             self._processed.add(random_cell)
     
     def _update_cell(self, index):
