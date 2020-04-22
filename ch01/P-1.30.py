@@ -13,8 +13,8 @@ def _log2(n):
 
 # ------ Using recursion -------
 def rec_div2(n):
-    if n <= 2:
-        return 1
+    if n < 2:
+        return 0
     else:
         return 1 + rec_div2(n // 2)
 
