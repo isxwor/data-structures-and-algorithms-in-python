@@ -3,14 +3,14 @@ Write a short recursive Python function that takes a character string s and
 outputs its reverse. For example, the reverse of 'pots&pans' would be 'snap&stop'.
 '''
 
-def flip(s, n):
-    if n == 0:
+
+def flip(s, n=0):
+    if n == len(s)-1:
         return s[n]
-    return s[n] + flip(s, n-1)
+    return flip(s, n+1) + s[n]
 
 
 if __name__ == '__main__':
     s = list(input('Enter any strings: '))
-    n = len(s) - 1
-    result = flip(s, n)
+    result = flip(s)
     print(result)
